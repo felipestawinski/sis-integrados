@@ -26,6 +26,7 @@ class Order:
         return channel
 
     def send_message(self, body: Dict):
+        print('Sending message: '+ str(body))
         self.__channel.basic_publish(
             exchange=self.__exchange,
             routing_key=self.__routing_key,
@@ -34,9 +35,7 @@ class Order:
                 delivery_mode=2
             )
         )
+
 order = {'id': 123, 'description':'HarryPotter', 'quantity':5}
 rabbitmq_publisher = Order()
-print("teste")
-rabbitmq_publisher.send_message({'id': 123, 
-                                'description':'HarryPotter', 
-                                'quantity':5})
+rabbitmq_publisher.send_message(order)

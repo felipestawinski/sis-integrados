@@ -7,6 +7,7 @@ class Stock:
         self.__username = "guest"
         self.__password = "guest"
         self.__queue = "data_queue"
+        self.__exchange = ""
         self.__callback = callback
         self.__channel = self.__create_channel()
 
@@ -40,8 +41,17 @@ class Stock:
 def minha_callback(ch, method, properties, body):
     estoque_ok = False
     # Lógica de verificação de estoque...
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
+
+    channel.queue_declare(queue='estoque_confirmado', durable=True)
+    channel.queue_declare(queue='estoque_insuficiente', durable=True)
+
     evento_resposta = 'estoque_confirmado' if estoque_ok else 'estoque_insuficiente'
-    channel.basic_publish(exchange='', routing_key=evento_resposta, body=str(pedido))
+    print('Pedido recebido!')
+    print('Dados do pedido:' + str(body))
+    print('Enviando dados para a fila: ' + evento_resposta)
+    channel.basic_publish(exchange="", routing_key=evento_resposta, body="")
 
 rabitmq_consumer = Stock(minha_callback)
 rabitmq_consumer.start()
