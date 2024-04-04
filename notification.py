@@ -1,4 +1,7 @@
 import pika
+from flask import Flask, request, render_template_string, flash
+from order import Order  
+import json
 
 class Notification:
     def __init__(self, callback1, callback2) -> None:
@@ -53,10 +56,12 @@ class Notification:
 
 def estoqueInsuficiente(ch, method, properties, body):
     print(f"Estoque insuficiente!")
+    
 
 
 def estoqueConfirmado(ch, method, properties, body):
     print(f"Estoque confirmado!")
+
 
 
 rabitmq_consumer = Notification(estoqueConfirmado, estoqueInsuficiente)
